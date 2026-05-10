@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>湾水告示栏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e8f4f8 0%, #dceef5 30%, #e3f0f8 60%, #eaf3fa 100%);
+            color: #1a3a4a;
+            line-height: 1.6;
+            padding-top: 60px;
+            min-height: 100vh;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 2px 24px rgba(78, 136, 180, 0.12),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 28px;
+            z-index: 1000;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(160, 200, 230, 0.2);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            width: 140px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 2px 6px rgba(40, 80, 110, 0.2));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #3a6d8c;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 7px 16px;
+            border-radius: 20px;
+            transition: all 0.25s ease;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(135deg, #6db3d4, #8ecae6);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(90, 156, 197, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .banner {
+            width: 100%;
+            height: 380px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: transform 0.7s cubic-bezier(0.42, 0, 0.58, 1);
+            will-change: transform;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 14px rgba(78, 136, 180, 0.15);
+            font-size: 1.6rem;
+            color: #2c6080;
+            cursor: pointer;
+            z-index: 20;
+            transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .arrow:hover {
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 6px 20px rgba(78, 136, 180, 0.25);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .arrow-left {
+            left: 20px;
+        }
+
+        .arrow-right {
+            right: 20px;
+        }
+
+        .banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(232, 244, 248, 0.5));
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .module {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 40px 36px;
+            border-radius: 20px;
+            box-shadow: 0 4px 28px rgba(78, 136, 180, 0.10), 0 0 0 1px rgba(180, 210, 235, 0.4);
+            text-align: center;
+            scroll-margin-top: 80px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .module:hover {
+            box-shadow: 0 8px 36px rgba(78, 136, 180, 0.16), 0 0 0 1px rgba(160, 200, 230, 0.55);
+        }
+
+        .title-module h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.25em;
+            color: #1e5068;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .body-module {
+            text-align: left;
+        }
+
+        .body-module h2 {
+            font-size: 1.8rem;
+            color: #2c6080;
+            border-bottom: 2px dashed #b8d8ec;
+            padding-bottom: 0.25em;
+            display: table;
+            margin: 0 auto 0.6em auto;
+            text-align: center;
+            font-weight: 650;
+            letter-spacing: 0.04em;
+        }
+
+        .body-module h3 {
+            font-size: 1.3rem;
+            color: #a3bcc8;
+            font-style: italic;
+            margin: 1.5em 0 0.8em;
+            font-weight: 500;
+        }
+
+        .body-module .notice-text {
+            font-size: 1.1rem;
+            margin: 1.2em 0 0.8em;
+            color: #2e5066;
+        }
+
+        .site-footer {
+            text-align: center;
+            color: #a3bcc8;
+            font-size: 0.9rem;
+            padding: 32px 20px;
+            margin-top: 24px;
+            background: transparent;
+            letter-spacing: 0.04em;
+            opacity: 0.85;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding-top: 110px;
+            }
+            .top-nav {
+                padding: 10px 16px;
+                gap: 10px;
+            }
+            .nav-logo img {
+                width: 110px;
+            }
+            .nav-links a {
+                font-size: 0.85rem;
+                padding: 5px 12px;
+            }
+            .banner {
+                height: 280px;
+            }
+            .arrow {
+                width: 36px;
+                height: 36px;
+                font-size: 1.3rem;
+            }
+            .arrow-left {
+                left: 8px;
+            }
+            .arrow-right {
+                right: 8px;
+            }
+            .module {
+                margin: 20px 12px;
+                padding: 28px 20px;
+                scroll-margin-top: 130px;
+            }
+            .title-module h1 {
+                font-size: 1.6rem;
+            }
+            .body-module h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="https://fennmoo.github.io/wanbriefing/" class="nav-logo">
+            <img src="wanshuigaoshilan.png" alt="湾水集团图片">
+        </a>
+        <div class="nav-links">
+            <a href="#welcome">欢迎标题</a>
+            <a href="#subway">地铁告示栏</a>
+            <a href="#bus">公交告示栏</a>
+        </div>
+    </nav>
+
+    <div class="banner" id="banner">
+        <div class="slider-container" id="sliderContainer"></div>
+        <button class="arrow arrow-left" id="prevBtn">‹</button>
+        <button class="arrow arrow-right" id="nextBtn">›</button>
+    </div>
+
+    <div class="module title-module" id="welcome">
+        <h1>欢迎来到湾水告示栏</h1>
+        <h1>Welcome to the Wanshui Briefing</h1>
+    </div>
+
+    <div class="module body-module" id="subway">
+        <h2>地铁告示栏</h2>
+        <h3>更新日期：2026/5/10</h3>
+        <p class="notice-text">我们重启了这个告示栏握手</p>
+    </div>
+
+    <div class="module body-module" id="bus">
+        <h2>公交告示栏</h2>
+        <h3>更新日期：2026/5/10</h3>
+        <p class="notice-text">我们重启了这个告示栏握手</p>
+    </div>
+
+    <footer class="site-footer">
+        湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水湾水
+    </footer>
+
+    <script>
+        (function() {
+            const images = [
+                'background1.png',
+                'background2.png',
+                'background3.png'
+            ];
+            const container = document.getElementById('sliderContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            const slide1 = document.createElement('div');
+            const slide2 = document.createElement('div');
+            slide1.className = 'slide';
+            slide2.className = 'slide';
+            container.appendChild(slide1);
+            container.appendChild(slide2);
+
+            let currentIndex = 0;
+            let activeSlide = slide1;
+            let nextSlide = slide2;
+            let autoTimer = null;
+            let pauseTimer = null;
+            const autoInterval = 6000;
+            const pauseAfterManual = 10000;
+            let isAnimating = false;   // 动画锁
+
+            function setBg(el, imgSrc) {
+                el.style.backgroundImage = `url('${imgSrc}')`;
+            }
+
+            function initSlides() {
+                setBg(activeSlide, images[0]);
+                activeSlide.style.transform = 'translateX(0)';
+                const nextIdx = (currentIndex + 1) % images.length;
+                setBg(nextSlide, images[nextIdx]);
+                nextSlide.style.transform = 'translateX(100%)';
+            }
+
+            // 向右切换（下一张）
+            function slideToNext() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                activeSlide.style.transform = 'translateX(-100%)';
+                nextSlide.style.transform = 'translateX(0)';
+
+                const onFinish = () => {
+                    activeSlide.removeEventListener('transitionend', onFinish);
+                    // 重置已经滑出的activeSlide到右侧，准备下一次
+                    activeSlide.style.transition = 'none';
+                    activeSlide.style.transform = 'translateX(100%)';
+                    currentIndex = (currentIndex + 1) % images.length;
+                    const newNext = (currentIndex + 1) % images.length;
+                    setBg(activeSlide, images[newNext]);
+                    // 强制重绘
+                    void activeSlide.offsetWidth;
+                    activeSlide.style.transition = '';
+                    // 交换引用
+                    [activeSlide, nextSlide] = [nextSlide, activeSlide];
+                    isAnimating = false;
+                };
+
+                activeSlide.addEventListener('transitionend', onFinish);
+            }
+
+            // 向左切换（上一张）
+            function slideToPrev() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 将nextSlide瞬间放到左侧，准备滑入
+                nextSlide.style.transition = 'none';
+                const prevIdx = (currentIndex - 1 + images.length) % images.length;
+                setBg(nextSlide, images[prevIdx]);
+                nextSlide.style.transform = 'translateX(-100%)';
+                void nextSlide.offsetWidth;
+                nextSlide.style.transition = '';
+
+                // 当前activeSlide向右滑出，nextSlide滑入中央
+                activeSlide.style.transform = 'translateX(100%)';
+                nextSlide.style.transform = 'translateX(0)';
+
+                const onFinish = () => {
+                    activeSlide.removeEventListener('transitionend', onFinish);
+                    // 重置activeSlide到左侧，准备下一次
+                    activeSlide.style.transition = 'none';
+                    activeSlide.style.transform = 'translateX(-100%)';
+                    currentIndex = prevIdx;
+                    const newNext = (currentIndex + 1) % images.length;
+                    setBg(activeSlide, images[newNext]);
+                    void activeSlide.offsetWidth;
+                    activeSlide.style.transition = '';
+                    [activeSlide, nextSlide] = [nextSlide, activeSlide];
+                    isAnimating = false;
+                };
+
+                activeSlide.addEventListener('transitionend', onFinish);
+            }
+
+            function startAuto() {
+                stopAuto();
+                autoTimer = setInterval(slideToNext, autoInterval);
+            }
+
+            function stopAuto() {
+                if (autoTimer) {
+                    clearInterval(autoTimer);
+                    autoTimer = null;
+                }
+            }
+
+            function resetPause() {
+                if (pauseTimer) clearTimeout(pauseTimer);
+                stopAuto();
+                pauseTimer = setTimeout(() => {
+                    pauseTimer = null;
+                    startAuto();
+                }, pauseAfterManual);
+            }
+
+            prevBtn.addEventListener('click', () => {
+                slideToPrev();
+                resetPause();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                slideToNext();
+                resetPause();
+            });
+
+            initSlides();
+            startAuto();
+        })();
+    </script>
+
+</body>
+</html>
